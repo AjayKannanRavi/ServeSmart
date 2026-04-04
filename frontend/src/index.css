@@ -1,0 +1,221 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  --primary: #FF9F0D;
+  /* Mani'Z Orange */
+  --primary-dark: #e88d00;
+  /* Darker Orange */
+  --primary-light: #fff5e6;
+  /* Light Orange */
+  --secondary: #0D0D0D;
+  /* Deep Black */
+  --bg: #F9FAFB;
+  /* Ghost White */
+  --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --card-shadow-hover: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08);
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.5rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  font-family: 'Outfit', sans-serif;
+}
+
+.font-serif {
+  font-family: 'Playfair Display', serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--bg);
+  color: var(--secondary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
+}
+
+#root {
+  width: 100%;
+}
+
+/* Premium Utility Classes */
+.premium-card {
+  background: white;
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.premium-card:hover {
+  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-2px);
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: white;
+  font-weight: 800;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-xl);
+  transition: all 0.2s;
+  box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.3);
+}
+
+.btn-primary:active {
+  transform: scale(0.96);
+}
+
+/* Hide scrollbars */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Micro-animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-premium {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+img {
+  transition: opacity 0.3s ease;
+}
+
+@keyframes floatSoft {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+
+@keyframes glowShift {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes rotateSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulseCore {
+  0%,
+  100% {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+  }
+  50% {
+    box-shadow: 0 22px 55px rgba(245, 158, 11, 0.28);
+  }
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes auroraFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.landing-glow-one {
+  animation: glowShift 8s ease-in-out infinite;
+}
+
+.landing-glow-two {
+  animation: glowShift 10s ease-in-out infinite reverse;
+}
+
+.orbit-ring {
+  animation: rotateSlow 34s linear infinite;
+}
+
+.orbit-module {
+  animation: floatSoft 5.2s ease-in-out infinite;
+}
+
+.pulse-core {
+  animation: pulseCore 4.8s ease-in-out infinite;
+}
+
+.section-reveal {
+  animation: riseIn 0.8s ease-out both;
+}
+
+.card-float {
+  animation: floatSoft 6.5s ease-in-out infinite;
+}
+
+.cta-aurora {
+  background: linear-gradient(120deg, rgba(17, 24, 39, 0.95), rgba(31, 41, 55, 0.95), rgba(217, 119, 6, 0.16));
+  background-size: 220% 220%;
+  animation: auroraFlow 8.5s ease infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-glow-one,
+  .landing-glow-two,
+  .orbit-ring,
+  .orbit-module,
+  .pulse-core,
+  .section-reveal,
+  .card-float,
+  .cta-aurora {
+    animation: none !important;
+  }
+}

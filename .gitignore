@@ -1,0 +1,34 @@
+.vscode/
+.sixth/
+
+# Java build output
+backend/target/
+backend/com/
+backend/*.class
+backend/*.log
+backend/*_log.txt
+backend/backend_*.log
+backend/backend_*.txt
+backend/build_*.txt
+backend/compile_*.txt
+backend/output*.txt
+backend/run_output.txt
+backend/startup_*.log
+backend/debug_compile.txt
+
+# Frontend build output and local logs
+frontend/node_modules/
+frontend/dist/
+frontend/err*.txt
+frontend/frontend_log.txt
+
+# Local credential / verification artifacts
+pass&creds.txt
+grand_vitara_staff.txt
+get-hotel-13-credentials.ps1
+ACCESS_GUIDES.txt
+DATABASE_MANUAL_VERIFICATION_GUIDE.md
+DATABASE_QUICK_REFERENCE.txt
+DATABASE_TOOLS_SUMMARY.txt
+DATABASE_VERIFICATION_INDEX.md
+DOOMANGOLI_README.txt
