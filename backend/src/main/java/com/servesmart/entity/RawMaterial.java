@@ -20,6 +20,8 @@ public class RawMaterial {
     @Column(nullable = false)
     private String unit; // kg, liters, pieces, etc.
 
+    private Double minThreshold;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;

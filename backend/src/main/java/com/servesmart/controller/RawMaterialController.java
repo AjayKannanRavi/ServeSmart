@@ -1,12 +1,17 @@
 package com.servesmart.controller;
 
+import com.servesmart.config.TenantContext;
 import com.servesmart.entity.RawMaterial;
+import com.servesmart.entity.Restaurant;
 import com.servesmart.repository.RawMaterialRepository;
+import com.servesmart.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/raw-materials")
@@ -14,51 +19,61 @@ import java.util.List;
 public class RawMaterialController {
 
     private final RawMaterialRepository repository;
-    private final com.servesmart.repository.RestaurantRepository restaurantRepository;
+    private final RestaurantRepository restaurantRepository;
 
     @GetMapping
     public List<RawMaterial> getAll() {
-        Long restaurantId = com.servesmart.config.TenantContext.getCurrentTenantAsLong();
-        return restaurantId != null ? repository.findByRestaurantId(restaurantId) : repository.findAll();
+        Long restaurantId = TenantContext.getCurrentTenantAsLong();
+        return restaurantId != null
+                ? repository.findByRestaurantId(restaurantId)
+                : repository.findAll();
     }
 
     @PostMapping
     public RawMaterial create(@RequestBody RawMaterial rawMaterial) {
-        Long restaurantId = com.servesmart.config.TenantContext.getCurrentTenantAsLong();
+        Long restaurantId = TenantContext.getCurrentTenantAsLong();
         if (restaurantId != null) {
-            restaurantRepository.findById(restaurantId).ifPresent(rawMaterial::setRestaurant);
+            Optional<Restaurant> restaurant = restaurantRepository.findById(restaurantId);
+            restaurant.ifPresent(rawMaterial::setRestaurant);
         }
         return repository.save(rawMaterial);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<RawMaterial> update(@PathVariable Long id, @RequestBody RawMaterial details) {
-        Long restaurantId = com.servesmart.config.TenantContext.getCurrentTenantAsLong();
-        return repository.findById(id)
-                .map(existing -> {
-                    if (restaurantId != null && !existing.getRestaurant().getId().equals(restaurantId)) {
-                        return ResponseEntity.status(org.springframework.http.HttpStatus.FORBIDDEN)
-                                .<RawMaterial>build();
-                    }
-                    existing.setName(details.getName());
-                    existing.setQuantity(details.getQuantity());
-                    existing.setUnit(details.getUnit());
-                    return ResponseEntity.ok(repository.save(existing));
-                })
-                .orElse(ResponseEntity.notFound().build());
+        Long restaurantId = TenantContext.getCurrentTenantAsLong();
+        if (id == null) return ResponseEntity.badRequest().build();
+        Optional<RawMaterial> existing = repository.findById(id);
+        if (existing.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        RawMaterial material = existing.get();
+        if (restaurantId != null && material.getRestaurant() != null
+                && !restaurantId.equals(material.getRestaurant().getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        material.setName(details.getName());
+        material.setQuantity(details.getQuantity());
+        material.setUnit(details.getUnit());
+        if (details.getMinThreshold() != null) {
+            material.setMinThreshold(details.getMinThreshold());
+        }
+        return ResponseEntity.ok(repository.save(material));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        Long restaurantId = com.servesmart.config.TenantContext.getCurrentTenantAsLong();
-        return repository.findById(id)
-                .map(existing -> {
-                    if (restaurantId != null && !existing.getRestaurant().getId().equals(restaurantId)) {
-                        return ResponseEntity.status(org.springframework.http.HttpStatus.FORBIDDEN).<Void>build();
-                    }
-                    repository.delete(existing);
-                    return ResponseEntity.ok().<Void>build();
-                })
-                .orElse(ResponseEntity.notFound().build());
+        Long restaurantId = TenantContext.getCurrentTenantAsLong();
+        Optional<RawMaterial> existing = repository.findById(id);
+        if (existing.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        RawMaterial material = existing.get();
+        if (restaurantId != null && material.getRestaurant() != null
+                && !restaurantId.equals(material.getRestaurant().getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        repository.delete(material);
+        return ResponseEntity.noContent().build();
     }
 }

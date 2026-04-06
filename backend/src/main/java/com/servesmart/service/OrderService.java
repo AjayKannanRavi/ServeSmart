@@ -36,7 +36,7 @@ public class OrderService {
             Optional<RestaurantTable> tempTable = tableRepository.findById(request.getTableId());
             if (tempTable.isPresent() && tempTable.get().getRestaurant() != null) {
                 restaurantId = tempTable.get().getRestaurant().getId();
-                TenantContext.setCurrentTenant(restaurantId != null ? restaurantId.toString() : null);
+                TenantContext.setCurrentTenant(restaurantId.toString());
             }
         }
 
@@ -262,6 +262,9 @@ public class OrderService {
     @Transactional(readOnly = true)
     public List<RestaurantOrder> getSessionOrders(Long tableId) {
         Long restaurantId = TenantContext.getCurrentTenantAsLong();
+        if (restaurantId == null) {
+            throw new RuntimeException("Restaurant context is required to fetch session orders");
+        }
         RestaurantTable table = tableRepository.findByTableNumberAndRestaurantId(tableId.intValue(), restaurantId)
                 .orElseThrow(() -> new RuntimeException("Table " + tableId + " not found"));
         

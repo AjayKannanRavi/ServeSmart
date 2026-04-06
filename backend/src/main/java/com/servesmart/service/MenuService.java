@@ -57,7 +57,8 @@ public class MenuService {
         Long restaurantId = TenantContext.getCurrentTenantAsLong();
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
-        if (restaurantId != null && !category.getRestaurant().getId().equals(restaurantId)) {
+        if (restaurantId != null && category.getRestaurant() != null
+                && !restaurantId.equals(category.getRestaurant().getId())) {
             throw new RuntimeException("Unauthorized access to delete category");
         }
         categoryRepository.delete(category);
@@ -100,7 +101,8 @@ public class MenuService {
         MenuItem item = menuItemRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Menu item not found"));
         
-        if (restaurantId != null && !item.getRestaurant().getId().equals(restaurantId)) {
+        if (restaurantId != null && item.getRestaurant() != null
+                && !restaurantId.equals(item.getRestaurant().getId())) {
             throw new RuntimeException("Unauthorized access to menu item");
         }
 
@@ -135,7 +137,8 @@ public class MenuService {
         MenuItem item = menuItemRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Menu item not found"));
         
-        if (restaurantId != null && !item.getRestaurant().getId().equals(restaurantId)) {
+        if (restaurantId != null && item.getRestaurant() != null
+                && !restaurantId.equals(item.getRestaurant().getId())) {
             throw new RuntimeException("Unauthorized access to delete menu item");
         }
         menuItemRepository.delete(item);

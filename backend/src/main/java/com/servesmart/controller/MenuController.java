@@ -7,6 +7,7 @@ import com.servesmart.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -38,23 +39,30 @@ public class MenuController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping(consumes = {"multipart/form-data"})
+    /**
+     * Add a new menu item — supports multipart (with image) or simple JSON.
+     */
+    @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<MenuItem> addItem(
             @RequestPart("item") MenuItemRequest request,
-            @RequestPart(value = "image", required = false) org.springframework.web.multipart.MultipartFile image) {
+            @RequestPart(value = "image", required = false) MultipartFile image) {
         return ResponseEntity.ok(menuService.addItem(request, image));
     }
 
-    @PutMapping(value = "/{id}", consumes = {"multipart/form-data"})
+    /**
+     * Update a menu item — supports multipart (with image) or simple JSON.
+     * A single endpoint handles both cases: image part is optional.
+     */
+    @PutMapping(value = "/{id}", consumes = "multipart/form-data")
     public ResponseEntity<MenuItem> updateItem(
             @PathVariable("id") Long id,
             @RequestPart("item") MenuItemRequest request,
-            @RequestPart(value = "image", required = false) org.springframework.web.multipart.MultipartFile image) {
+            @RequestPart(value = "image", required = false) MultipartFile image) {
         return ResponseEntity.ok(menuService.updateItem(id, request, image));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<MenuItem> updateItemSimple(
+    @PutMapping(value = "/{id}", consumes = "application/json")
+    public ResponseEntity<MenuItem> updateItemJson(
             @PathVariable("id") Long id,
             @RequestBody MenuItemRequest request) {
         return ResponseEntity.ok(menuService.updateItem(id, request, null));
